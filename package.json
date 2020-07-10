@@ -4,6 +4,11 @@
   "main": "index.js",
   "author": "Nelson Chinedu <egwuchinedu69@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "",
+    "dev": "cross-env NODE_ENV=development nodemon",
+    "tslint": "tslint -c tslint.json 'src/**/*.ts'"
+  },
   "dependencies": {
     "@babel/polyfill": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
@@ -13,9 +18,11 @@
     "apollo-server": "^2.15.1",
     "apollo-server-express": "^2.15.1",
     "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
     "cloudinary": "^1.22.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "^15.3.0",
@@ -23,7 +30,6 @@
     "helmet": "^3.23.3",
     "jimp": "^0.14.0",
     "jsonwebtoken": "^8.5.1",
-    "logger": "^0.0.1",
     "moment": "^2.27.0",
     "multer": "^1.4.2",
     "passport": "^0.4.1",
@@ -32,7 +38,8 @@
     "passport-local": "^1.0.0",
     "pg": "^8.3.0",
     "sequelize": "^6.3.0",
-    "uuid": "^8.2.0"
+    "uuid": "^8.2.0",
+    "winston-env-logger": "^1.0.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.4",
@@ -49,12 +56,15 @@
     "@types/helmet": "^0.0.47",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/multer": "^1.4.3",
+    "@types/node": "^14.0.21",
     "@types/passport": "^1.0.4",
     "@types/passport-facebook": "^2.1.10",
     "@types/passport-google-oauth20": "^2.0.3",
     "@types/passport-local": "^1.0.33",
     "@types/uuid": "^8.0.0",
     "nodemon": "^2.0.4",
+    "ts-node": "^8.10.2",
+    "tslint": "^6.1.2",
     "typescript": "^3.9.6"
   }
 }
