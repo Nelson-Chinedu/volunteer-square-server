@@ -6,6 +6,7 @@ export default gql `
   }
   type Mutation {
     account(firstname: String!, lastname: String!, email: String!, password: String!): Token!
+    signin(email: String!, password: String!): Token!
   }
 
   type Token {
