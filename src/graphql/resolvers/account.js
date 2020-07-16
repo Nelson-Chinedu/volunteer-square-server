@@ -1,5 +1,3 @@
-import {v4 as uuidv4} from 'uuid';
-
 import checkEmail from '../../lib/checkEmail';
 import generateToken from '../../lib/generateToken';
 import { hashPassword, isValidPassword } from '../../lib/passwordOps';
@@ -8,15 +6,15 @@ import validate from '../../lib/validate';
 export default {
   Query: {
     user: async (parent, args, {models}) => {
-      return await models.Accounts.findByPk(1)
+      return await models.Accounts.findByPk(1);
     }
   },
   Mutation: {
-    account: async (parent, args, {secret, models}) => {
+    signup: async (parent, args, {secret, models}) => {
       const { firstname, lastname, email, password } = args;
      
       const userInput = await validate.signUp(args);
-      
+       
       if (userInput) {
         let {message} = userInput;
         if (message){
@@ -39,13 +37,11 @@ export default {
       const hashedPassword = await hashPassword(password);
 
       const profile = await models.Profile.create({
-        id: uuidv4(),
         firstname,
         lastname,
       });
 
       const user = await models.Account.create({
-        id: uuidv4(),
         firstname,
         lastname,
         email,
@@ -80,16 +76,17 @@ export default {
       if (!checkUserEmail){
         return {
           token: '',
-          message: 'User not found'
+          message: 'E-mail or password is incorrect'
         }
       }
+
       const { dataValues } = checkUserEmail;
       const checkPassword = await isValidPassword(password, dataValues.password );
       
       if (!checkPassword) {
         return {
           token: '',
-          message: 'User not found'
+          message: 'E-mail or password is incorrect'
         }
       }
       

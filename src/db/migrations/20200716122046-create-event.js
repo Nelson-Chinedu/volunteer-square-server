@@ -1,49 +1,41 @@
 'use strict';
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Accounts', {
+    await queryInterface.createTable('Events', {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
-        autoIncrement: false
+        autoIncrement: false,
       },
-      email: {
+      name: {
         allowNull: false,
-        unique: true,
         type: Sequelize.STRING,
-        validate: {
-          notEmpty: true,
-          isEmail: true,
-        },
       },
-      password: {
+      description: {
+        allowNull: false,
         type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-          len: [8, 255],
-        },
       },
-      blocked: {
-        type: Sequelize.BOOLEAN,
+      category: {
         allowNull: false,
+        type: Sequelize.STRING,
       },
-      verified: {
-        type: Sequelize.BOOLEAN,
+      location: {
         allowNull: false,
+        type: Sequelize.STRING,
+      },
+      time: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
+      date: {
+        allowNull: false,
+        type: Sequelize.STRING,
       },
       profileId: {
-        type: Sequelize.UUID,
         allowNull: false,
-        references: {
-          model: {
-            tableName: 'Profiles',
-          },
-          key: 'id'
-      },
-      onUpdate: 'cascade',
-      onDelete: 'cascade'
+        type: Sequelize.UUID,
       },
       createdAt: {
         allowNull: false,
@@ -56,6 +48,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Accounts');
+    await queryInterface.dropTable('Events');
   }
 };
