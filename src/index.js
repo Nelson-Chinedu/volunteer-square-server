@@ -9,7 +9,7 @@ import helmet from 'helmet';
 import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 
-import models from './server/models';
+import models from './db/models';
 import typeDefs from "./graphql/typedefs/account";
 import resolvers from "./graphql/resolvers/account";
 
