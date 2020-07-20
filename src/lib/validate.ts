@@ -1,38 +1,38 @@
 
 const validate =  {
-  signUp: async (args) =>{
+  signUp: async (args: any) =>{
     const { firstname, lastname, email, password } = args;
     if (firstname.length <= 0) {
       return {
-        message: "Firstname is Required"
+        message: 'Firstname is Required'
       };
     }
     if (lastname.length <= 0) {
       return {
-        message: "Lastname is Required"
+        message: 'Lastname is Required'
       };
     }
     if (email.length <= 0) {
       return {
-        message: "Email is Required"
+        message: 'Email is Required'
       };
     }
     if (password.length <= 0) {
       return {
-        message: "Password is Required"
+        message: 'Password is Required'
       };
     }
   },
-  signIn: async (args) => {
+  signIn: async (args: any) => {
     const { email, password } = args;
     if (email.length <= 0) {
       return {
-        message: "Email Address is Required"
+        message: 'Email Address is Required'
       };
     }
     if (password.length <= 0) {
       return {
-        message: "Password is Required"
+        message: 'Password is Required'
       };
     }
   }

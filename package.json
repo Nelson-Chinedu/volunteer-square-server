@@ -11,7 +11,7 @@
     "seed": "sequelize db:seed --seed 20200715163501-profile 20200715163007-account",
     "undo:seed": "sequelize db:seed:undo:all",
     "dev": "cross-env NODE_ENV=development nodemon",
-    "tslint": "tslint -c tslint.json 'src/**/*.js'"
+    "tslint": "tslint -c tslint.json 'src/**/*.ts'"
   },
   "dependencies": {
     "@babel/polyfill": "^7.10.4",
@@ -66,6 +66,7 @@
     "@types/passport-google-oauth20": "^2.0.3",
     "@types/passport-local": "^1.0.33",
     "@types/uuid": "^8.0.0",
+    "@types/validator": "^13.1.0",
     "nodemon": "^2.0.4",
     "ts-node": "^8.10.2",
     "tslint": "^6.1.2",

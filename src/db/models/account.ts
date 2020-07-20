@@ -1,18 +1,18 @@
-'use strict';
+// 'use strict';
 
-const uuid = require('uuid');
-const { Model } = require('sequelize');
+import uuid from 'uuid';
+import { Model } from 'sequelize';
 
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize:any, DataTypes:any) => {
   class Account extends Model {
-    static associate(models) {
+    static associate(models:any) {
       // define association here
-    Account.belongsTo(models.Profile, { 
+    Account.belongsTo(models.Profile, {
       foreignKey: 'profileId',
-      onDelete: 'CASCADE' 
-    })
+      onDelete: 'CASCADE'
+    });
     }
-  };
+  }
   Account.init({
     id: {
       primaryKey: true,
@@ -27,17 +27,17 @@ module.exports = (sequelize, DataTypes) => {
         isEmail: true,
       },
     },
-    password: { 
+    password: {
       type: DataTypes.STRING,
       validate: {
         notEmpty: true,
         len: [8, 255],
-      }, 
+      },
     },
-    blocked: { 
+    blocked: {
       type: DataTypes.BOOLEAN,
     },
-    verified: { 
+    verified: {
       type: DataTypes.BOOLEAN,
     },
     profileId: {
@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Account',
   });
 
-  Account.beforeCreate(account => account.id = uuid.v4()); 
-  
+  // Account.beforeCreate(account => account.id = uuid.v4());
+
   return Account;
 };

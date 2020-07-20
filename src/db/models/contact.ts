@@ -1,15 +1,15 @@
 'use strict';
 
-const { Model } = require('sequelize');
-const uuid = require('uuid');
+import { Model } from 'sequelize';
+import uuid from 'uuid';
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize:any, DataTypes: any) => {
   class Contact extends Model {
-    static associate(models) {
+    static associate(models:any) {
       // define association here
-    Contact.belongsTo(models.Event, { onDelete: 'CASCADE' })
+    Contact.belongsTo(models.Event, { onDelete: 'CASCADE' });
     }
-  };
+  }
   Contact.init({
     id: {
       primaryKey: true,
@@ -41,7 +41,6 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Event',
   });
 
-  Contact.beforeCreate(contact => contact.id = uuid.v4()); 
-  
+  Contact.beforeCreate((contact:any) => contact.id = uuid.v4());
   return Contact;
 };

@@ -1,15 +1,15 @@
 'use strict';
 
-const { Model } = require('sequelize');
-const uuid = require('uuid');
+import { Model } from 'sequelize';
+import uuid from 'uuid';
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize: any, DataTypes: any) => {
   class Profile extends Model {
-    static associate(models) {
+    static associate(models: any) {
       // define association here
-      Profile.hasMany(models.Event, { onDelete: 'CASCADE' })
+      Profile.hasMany(models.Event, { onDelete: 'CASCADE' });
     }
-  };
+  }
   Profile.init({
     id: {
       primaryKey: true,
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     imageUrl: {
       type: DataTypes.STRING,
     },
-    city: { 
+    city: {
       type: DataTypes.STRING,
     },
     country: {
@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Profile',
   });
 
-  Profile.beforeCreate(account => account.id = uuid.v4()); 
-  
+  Profile.beforeCreate(account => account.id = uuid.v4());
+
   return Profile;
 };
