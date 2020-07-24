@@ -3,17 +3,29 @@ import generateToken from '../../lib/generateToken';
 import { hashPassword, isValidPassword } from '../../lib/passwordOps';
 import validate from '../../lib/validate';
 
+import { Profile, Account } from '../../db';
+
+interface IArgs {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+}
+
+interface IContext {
+  secret: string | number;
+}
+
 export default {
   Query: {
-    user: async (_parent: any, _args: any, context: any) => {
-      const {models} = context;
-      return await models.Accounts.findByPk(1);
+    user: async (_parent: any, _args: any, _context: IContext) => {
+      return {email: 'Hello'};
     }
   },
   Mutation: {
-    signup: async (_parent: any, args: any, context: any) => {
+    signup: async (_parent: any, args: IArgs, context: IContext) => {
       const { firstname, lastname, email, password } = args;
-      const { models, secret } = context;
+      const { secret } = context;
 
       const userInput = await validate.signUp(args);
 
@@ -27,9 +39,9 @@ export default {
         }
       }
 
-      const checkUserEmail = await checkEmail(email, {models});
+      const checkUserEmail = await checkEmail(email);
 
-      if (checkUserEmail && checkUserEmail.isNewRecord === false){
+      if (checkUserEmail) {
         return {
           token: '',
           message: 'Email address already exist'
@@ -38,29 +50,26 @@ export default {
 
       const hashedPassword = await hashPassword(password);
 
-      const profile = await models.Profile.create({
+      const profile = Profile.create({
         firstname,
-        lastname,
+        lastname
       });
+      await profile.save();
 
-       await models.Account.create({
-        firstname,
-        lastname,
+      const account = Account.create({
         email,
-        blocked: false,
-        verified: false,
-        password:hashedPassword,
-        profileId: profile.id
+        password: hashedPassword,
       });
+      await account.save();
 
       return {
         token: generateToken({firstname,lastname,email}, secret , '15m'),
         message: 'Account created successfully'
       };
     },
-    signin: async (_parent: any, args: any, context: any ) => {
+    signin: async (_parent: any, args: IArgs, context: IContext ) => {
       const { email, password } = args;
-      const {models, secret} = context;
+      const { secret } = context;
 
       const userInput = await validate.signIn(args);
 
@@ -74,7 +83,7 @@ export default {
         }
       }
 
-      const checkUserEmail = await checkEmail(email, {models});
+      const checkUserEmail = await checkEmail(email);
 
       if (!checkUserEmail){
         return {
@@ -83,8 +92,8 @@ export default {
         };
       }
 
-      const { dataValues } = checkUserEmail;
-      const checkPassword = await isValidPassword(password, dataValues.password );
+      const hashedPassword = checkUserEmail.password;
+      const checkPassword = await isValidPassword(password, hashedPassword );
 
       if (!checkPassword) {
         return {
@@ -94,7 +103,7 @@ export default {
       }
 
       return {
-        token: generateToken({ email, id:dataValues.id}, secret , '15m'),
+        token: generateToken({ email, id: checkUserEmail.id }, secret , '15m'),
         message: 'Logged in successfully'
       };
     }

@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import dotenv from 'dotenv';
 import http from 'http';
 import express from 'express';
@@ -7,8 +8,8 @@ import cors from 'cors';
 import winstonEnvLogger from 'winston-env-logger';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import { createConnection } from 'typeorm';
 
-import models from './db/models';
 import typeDefs from './graphql/typedefs/account';
 import resolvers from './graphql/resolvers/account';
 
@@ -31,7 +32,7 @@ const server = new ApolloServer({
     if (req){
       return {
         secret: process.env.SECRET,
-        models
+        // models
       };
     }
   }
@@ -42,8 +43,12 @@ server.applyMiddleware({app, path: '/graphql'});
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
-httpServer.listen(port, () => {
-  winstonEnvLogger.info(`server started on port ${port} `);
+createConnection().then(() => {
+  httpServer.listen(port, () => {
+    winstonEnvLogger.info(`server started on port ${port} `);
+  });
+}).catch(e => {
+  winstonEnvLogger.error(e.message);
 });
 
 export default app;

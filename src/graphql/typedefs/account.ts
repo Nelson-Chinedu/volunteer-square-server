@@ -6,12 +6,12 @@ export default gql `
   }
   type Mutation {
     signup(firstname: String!, lastname: String!, email: String!, password: String!): Token!
-    signin(email: String!, password: String!): Token
+    signin(email: String!, password: String!): Token!
   }
 
   type Token {
-    token: String
-    message: String
+    token: String!
+    message: String!
   }
 
   type User {

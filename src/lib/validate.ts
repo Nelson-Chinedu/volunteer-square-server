@@ -1,6 +1,12 @@
+interface IArgs {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+}
 
 const validate =  {
-  signUp: async (args: any) =>{
+  signUp: async (args: IArgs) =>{
     const { firstname, lastname, email, password } = args;
     if (firstname.length <= 0) {
       return {
@@ -23,7 +29,7 @@ const validate =  {
       };
     }
   },
-  signIn: async (args: any) => {
+  signIn: async (args: IArgs) => {
     const { email, password } = args;
     if (email.length <= 0) {
       return {
