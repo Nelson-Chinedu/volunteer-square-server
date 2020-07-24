@@ -1,3 +1,5 @@
+import winstonEnvLogger from 'winston-env-logger';
+
 import checkEmail from '../../lib/checkEmail';
 import generateToken from '../../lib/generateToken';
 import { hashPassword, isValidPassword } from '../../lib/passwordOps';
@@ -13,7 +15,7 @@ interface IArgs {
 }
 
 interface IContext {
-  secret: string | number;
+  secret: string;
 }
 
 export default {
@@ -27,7 +29,8 @@ export default {
       const { firstname, lastname, email, password } = args;
       const { secret } = context;
 
-      const userInput = await validate.signUp(args);
+      try {
+        const userInput = await validate.signUp(args);
 
       if (userInput) {
         const {message} = userInput;
@@ -59,6 +62,7 @@ export default {
       const account = Account.create({
         email,
         password: hashedPassword,
+        profile,
       });
       await account.save();
 
@@ -66,12 +70,20 @@ export default {
         token: generateToken({firstname,lastname,email}, secret , '15m'),
         message: 'Account created successfully'
       };
+      } catch (error) {
+        winstonEnvLogger.error({
+          message: 'An error occured',
+          error
+        });
+        throw new Error('An error occured creating account');
+      }
     },
     signin: async (_parent: any, args: IArgs, context: IContext ) => {
       const { email, password } = args;
       const { secret } = context;
 
-      const userInput = await validate.signIn(args);
+      try {
+        const userInput = await validate.signIn(args);
 
       if (userInput) {
         const {message} = userInput;
@@ -106,6 +118,13 @@ export default {
         token: generateToken({ email, id: checkUserEmail.id }, secret , '15m'),
         message: 'Logged in successfully'
       };
+      } catch (error) {
+        winstonEnvLogger.error({
+          message: 'An error occured',
+          error
+        });
+        throw new Error('An error occured logging');
+      }
     }
   }
 };

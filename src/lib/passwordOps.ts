@@ -1,10 +1,27 @@
+import winstonEnvLogger from 'winston-env-logger';
 import bcrypt from 'bcrypt';
 
 export const hashPassword = async (password: string) => {
   const salt = 10;
-  return await bcrypt.hash(password, salt);
+  try {
+    return await bcrypt.hash(password, salt);
+  } catch (error) {
+    winstonEnvLogger.error({
+      message: 'An error occured',
+      error
+    });
+    throw new Error('An error occured');
+  }
 };
 
 export const isValidPassword = async (password: string, hashedPassword: string) => {
-  return await bcrypt.compare(password, hashedPassword);
+  try {
+    return await bcrypt.compare(password, hashedPassword);
+  } catch (error) {
+    winstonEnvLogger.error({
+      message: 'An error occured',
+      error
+    });
+    throw new Error('An error occured');
+  }
 };

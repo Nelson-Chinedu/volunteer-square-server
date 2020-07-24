@@ -1,3 +1,5 @@
+import winstonEnvLogger from 'winston-env-logger';
+
 import { Account } from '../db';
 
 const checkEmail = async (email: string) => {
@@ -8,7 +10,11 @@ const checkEmail = async (email: string) => {
       }
     });
   } catch (error) {
-    throw new Error(error);
+    winstonEnvLogger.error({
+      message: 'An error occured',
+      error
+    });
+    throw new Error('An error occured');
   }
 };
 

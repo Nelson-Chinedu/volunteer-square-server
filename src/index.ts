@@ -32,7 +32,6 @@ const server = new ApolloServer({
     if (req){
       return {
         secret: process.env.SECRET,
-        // models
       };
     }
   }
@@ -47,8 +46,12 @@ createConnection().then(() => {
   httpServer.listen(port, () => {
     winstonEnvLogger.info(`server started on port ${port} `);
   });
-}).catch(e => {
-  winstonEnvLogger.error(e.message);
+}).catch(error => {
+  winstonEnvLogger.error({
+    message: 'An error occured',
+    error
+  });
+  throw new Error('An error occured connecting to database');
 });
 
 export default app;
