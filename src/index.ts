@@ -1,17 +1,17 @@
+import 'reflect-metadata';
 import dotenv from 'dotenv';
 import http from 'http';
 import express from 'express';
-import { ApolloServer, AuthenticationError } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import winstonEnvLogger from 'winston-env-logger';
 import helmet from 'helmet';
-import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
+import { createConnection } from 'typeorm';
 
-import models from './db/models';
-import typeDefs from "./graphql/typedefs/account";
-import resolvers from "./graphql/resolvers/account";
+import typeDefs from './graphql/typedefs/account';
+import resolvers from './graphql/resolvers/account';
 
 dotenv.config();
 
@@ -28,12 +28,11 @@ app.use(winstonEnvLogger.logger());
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async({req, connection}) => {
+  context: async({req}) => {
     if (req){
       return {
         secret: process.env.SECRET,
-        models
-      }
+      };
     }
   }
 });
@@ -43,8 +42,16 @@ server.applyMiddleware({app, path: '/graphql'});
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
-httpServer.listen(port, () => {
-  winstonEnvLogger.info(`server started on port ${port} `);
+createConnection().then(() => {
+  httpServer.listen(port, () => {
+    winstonEnvLogger.info(`server started on port ${port} `);
+  });
+}).catch(error => {
+  winstonEnvLogger.error({
+    message: 'An error occured',
+    error
+  });
+  throw new Error('An error occured connecting to database');
 });
 
 export default app;

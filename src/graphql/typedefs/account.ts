@@ -21,4 +21,4 @@ export default gql `
     createdAt: String
     updatedAt: String
   }
-`
+`;
