@@ -22,6 +22,9 @@ export default class Profile extends BaseEntity {
   lastname: string;
 
   @Column('varchar', { nullable: true })
+  phoneNumber: string;
+
+  @Column('varchar', { nullable: true })
   city: string;
 
   @Column('varchar', { nullable: true })
