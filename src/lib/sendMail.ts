@@ -13,8 +13,8 @@ const sendMail = async (receiver:string, message:IMessage) => {
   try {
     const msg = {
       to: receiver,
-      from: 'Volunteer Square <no-reply@volunteerSquare.com>',
-      subject: 'Volunteer Square <no-reply@volunteerSquare.com>',
+      from: 'Volunteer Square <no-reply@volunteersquare.com>',
+      subject: 'Volunteer Square <no-reply@volunteersquare.com>',
       html: `<p>${message.name}</p>
              <p>${message.body} </p>
              <a href='#'>${message.link}</a>`,
