@@ -17,7 +17,7 @@ const sendMail = async (receiver:string, message:IMessage) => {
       subject: 'Volunteer Square <no-reply@volunteersquare.com>',
       html: `<p>${message.name}</p>
              <p>${message.body} </p>
-             <a href='#'>${message.link}</a>`,
+             <a href='http://localhost:3000/email-verification/token?=${message.link}'>${message.link}</a>`,
     };
     await sgMail.send(msg);
   } catch (error) {
