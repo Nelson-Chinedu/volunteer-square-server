@@ -4,6 +4,7 @@ import checkEmail from '../../lib/checkEmail';
 import generateToken from '../../lib/generateToken';
 import { hashPassword, isValidPassword } from '../../lib/passwordOps';
 import validate from '../../lib/validate';
+import sendMail from '../../lib/sendMail';
 
 import { Profile, Account } from '../../db';
 
@@ -32,44 +33,56 @@ export default {
       try {
         const userInput = await validate.signUp(args);
 
-      if (userInput) {
-        const {message} = userInput;
-        if (message){
+        if (userInput) {
+          const {message} = userInput;
+          if (message){
+            return {
+              token: '',
+              message
+            };
+          }
+        }
+
+        const checkUserEmail = await checkEmail(email);
+
+        if (checkUserEmail) {
           return {
             token: '',
-            message
+            message: 'Email address already exist'
           };
         }
-      }
 
-      const checkUserEmail = await checkEmail(email);
+        const hashedPassword = await hashPassword(password);
 
-      if (checkUserEmail) {
-        return {
-          token: '',
-          message: 'Email address already exist'
+        const profile = Profile.create({
+          firstname,
+          lastname
+        });
+        await profile.save();
+
+        const account = Account.create({
+          email,
+          password: hashedPassword,
+          profile,
+        });
+        await account.save();
+
+        const payload = {
+          id: account.id,
+          email: account.email
         };
-      }
+        const mailToken = await generateToken(payload, secret, '7d');
+        const mailMessage = {
+          name: `Welcome ${firstname} ${lastname}`,
+          body: 'Your account have been created suucessfully, click the link below to verify',
+          link: `${mailToken}`
+        };
 
-      const hashedPassword = await hashPassword(password);
-
-      const profile = Profile.create({
-        firstname,
-        lastname
-      });
-      await profile.save();
-
-      const account = Account.create({
-        email,
-        password: hashedPassword,
-        profile,
-      });
-      await account.save();
-
-      return {
-        token: generateToken({firstname,lastname,email}, secret , '15m'),
-        message: 'Account created successfully'
-      };
+        await sendMail(email, mailMessage);
+        return {
+          token: generateToken({firstname,lastname,email}, secret , '15m'),
+          message: 'Account created successfully, A verification mail has been sent to the email provided'
+        };
       } catch (error) {
         winstonEnvLogger.error({
           message: 'An error occured',
@@ -85,45 +98,45 @@ export default {
       try {
         const userInput = await validate.signIn(args);
 
-      if (userInput) {
-        const {message} = userInput;
-        if (message){
+        if (userInput) {
+          const {message} = userInput;
+          if (message){
+            return {
+              token: '',
+              message
+            };
+          }
+        }
+
+        const checkUserEmail = await checkEmail(email);
+
+        if (!checkUserEmail){
           return {
             token: '',
-            message
+            message: 'E-mail or password is incorrect'
           };
         }
-      }
 
-      const checkUserEmail = await checkEmail(email);
+        const hashedPassword = checkUserEmail.password;
+        const checkPassword = await isValidPassword(password, hashedPassword );
 
-      if (!checkUserEmail){
+        if (!checkPassword) {
+          return {
+            token: '',
+            message: 'E-mail or password is incorrect'
+          };
+        }
+
         return {
-          token: '',
-          message: 'E-mail or password is incorrect'
+          token: generateToken({ email, id: checkUserEmail.id }, secret , '15m'),
+          message: 'Logged in successfully'
         };
-      }
-
-      const hashedPassword = checkUserEmail.password;
-      const checkPassword = await isValidPassword(password, hashedPassword );
-
-      if (!checkPassword) {
-        return {
-          token: '',
-          message: 'E-mail or password is incorrect'
-        };
-      }
-
-      return {
-        token: generateToken({ email, id: checkUserEmail.id }, secret , '15m'),
-        message: 'Logged in successfully'
-      };
       } catch (error) {
         winstonEnvLogger.error({
           message: 'An error occured',
           error
         });
-        throw new Error('An error occured logging');
+        throw new Error('An error occured logging in');
       }
     }
   }
