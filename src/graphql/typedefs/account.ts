@@ -7,6 +7,7 @@ export default gql `
   type Mutation {
     signup(firstname: String!, lastname: String!, email: String!, password: String!): Token!
     signin(email: String!, password: String!): Token!
+    verifyEmail(token: String!): EmailVerify!
   }
 
   type Token {
@@ -20,5 +21,9 @@ export default gql `
     verified: Boolean
     createdAt: String
     updatedAt: String
+  }
+
+  type EmailVerify {
+    message: String!
   }
 `;
