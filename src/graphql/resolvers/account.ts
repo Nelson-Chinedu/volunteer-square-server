@@ -151,7 +151,7 @@ export default {
       const { secret } = context;
 
       try {
-        const decodeData: any = jwt.verify(args.token, secret);
+        const decodeData: any = await jwt.verify(args.token, secret);
         if (decodeData) {
           const { email } = decodeData;
           const checkUserEmail: any = await checkEmail(email);
@@ -179,6 +179,9 @@ export default {
             error
           });
           if(error && error.message === 'invalid signature'){
+            throw new Error('Not authorized');
+          }
+          if(error && error.message === 'invalid token'){
             throw new Error('Not authorized');
           }
           if(error && error.message === 'jwt expired'){
