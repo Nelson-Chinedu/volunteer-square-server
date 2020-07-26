@@ -1,4 +1,6 @@
 import winstonEnvLogger from 'winston-env-logger';
+import jwt from 'jsonwebtoken';
+import { getConnection } from 'typeorm';
 
 import checkEmail from '../../lib/checkEmail';
 import generateToken from '../../lib/generateToken';
@@ -17,6 +19,12 @@ interface IArgs {
 
 interface IContext {
   secret: string;
+}
+
+interface IVerifyArgs {
+  id: string;
+  email: string;
+  token: string;
 }
 
 export default {
@@ -137,6 +145,67 @@ export default {
           error
         });
         throw new Error('An error occured logging in');
+      }
+    },
+    verifyEmail: async (_parent: any, args: IVerifyArgs, context: IContext) => {
+      const { secret } = context;
+
+      try {
+        const decodeData: any = jwt.verify(args.token, secret);
+        if (decodeData) {
+          const { email } = decodeData;
+          const checkUserEmail: any = await checkEmail(email);
+          if (checkUserEmail){
+            const { verified } = checkUserEmail;
+            if (verified === 'true'){
+              return {
+                message: 'Your email address has been verified'
+              };
+            }
+            await getConnection()
+              .createQueryBuilder()
+              .update(Account)
+              .set({verified: true})
+              .where('email = :email', {email})
+              .execute();
+            return {
+              message: 'Account verified'
+            };
+          }
+        }
+      } catch (error) {
+          winstonEnvLogger.error({
+            message: 'An error occured',
+            error
+          });
+          if(error && error.message === 'invalid signature'){
+            throw new Error('Not authorized');
+          }
+          if(error && error.message === 'jwt expired'){
+            const decodePayload: any = await jwt.decode(args.token);
+
+            try {
+              if (decodePayload){
+                const { id, email } = decodePayload;
+                const payload = {
+                  id,
+                  email
+                };
+                const mailToken = await generateToken(payload, secret, '7d');
+                const mailMessage = {
+                  name: `Dear ${email}`,
+                  body: 'Click the link below to verify your account',
+                  link: `${mailToken}`
+                };
+                await sendMail(email, mailMessage);
+                return {
+                  message: 'A new verification link has been sent to your email'
+                };
+              }
+            }catch (error) {
+              throw new Error('An error occured verifying mail');
+            }
+          }
       }
     }
   }
