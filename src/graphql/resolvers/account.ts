@@ -1,4 +1,5 @@
 import winstonEnvLogger from 'winston-env-logger';
+import { AuthenticationError, UserInputError, ForbiddenError } from 'apollo-server';
 import jwt from 'jsonwebtoken';
 import { getConnection } from 'typeorm';
 
@@ -44,20 +45,14 @@ export default {
         if (userInput) {
           const {message} = userInput;
           if (message){
-            return {
-              token: '',
-              message
-            };
+            throw new UserInputError(message);
           }
         }
 
         const checkUserEmail = await checkEmail(email);
 
         if (checkUserEmail) {
-          return {
-            token: '',
-            message: 'Email address already exist'
-          };
+          throw new UserInputError('Email address already exist');
         }
 
         const hashedPassword = await hashPassword(password);
@@ -96,6 +91,12 @@ export default {
           message: 'An error occured',
           error
         });
+        if (error && error.message === 'An error occured sending mail') {
+          throw new Error('Account created successfully, But verification email was not sent successfully');
+        }
+        if (error && error.extensions.code === 'BAD_USER_INPUT') {
+          throw new UserInputError(error.message);
+        }
         throw new Error('An error occured creating account');
       }
     },
@@ -109,30 +110,28 @@ export default {
         if (userInput) {
           const {message} = userInput;
           if (message){
-            return {
-              token: '',
-              message
-            };
+            throw new UserInputError(message);
           }
         }
 
-        const checkUserEmail = await checkEmail(email);
+        const checkUserEmail: any = await checkEmail(email);
 
         if (!checkUserEmail){
-          return {
-            token: '',
-            message: 'E-mail or password is incorrect'
-          };
+          throw new AuthenticationError('E-mail or password is incorrect');
         }
 
         const hashedPassword = checkUserEmail.password;
         const checkPassword = await isValidPassword(password, hashedPassword );
 
         if (!checkPassword) {
-          return {
-            token: '',
-            message: 'E-mail or password is incorrect'
-          };
+          throw new AuthenticationError('E-mail or password is incorrect');
+        }
+
+        if (checkUserEmail) {
+          const { verified } = checkUserEmail;
+          if (verified === 'false'){
+            throw new AuthenticationError('Account not verified, Please check your mail for verification link');
+          }
         }
 
         return {
@@ -144,6 +143,12 @@ export default {
           message: 'An error occured',
           error
         });
+        if (error && error.extensions.code === 'BAD_USER_INPUT') {
+          throw new UserInputError(error.message);
+        }
+        if (error && error.extensions.code === 'UNAUTHENTICATED') {
+          throw new AuthenticationError(error.message);
+        }
         throw new Error('An error occured logging in');
       }
     },
@@ -155,6 +160,10 @@ export default {
         if (decodeData) {
           const { email } = decodeData;
           const checkUserEmail: any = await checkEmail(email);
+
+          if (checkUserEmail === undefined || checkUserEmail === null) {
+            throw new ForbiddenError('Not authorized');
+          }
           if (checkUserEmail){
             const { verified } = checkUserEmail;
             if (verified === 'true'){
@@ -179,10 +188,10 @@ export default {
             error
           });
           if(error && error.message === 'invalid signature'){
-            throw new Error('Not authorized');
+            throw new ForbiddenError('Not authorized');
           }
           if(error && error.message === 'invalid token'){
-            throw new Error('Not authorized');
+            throw new ForbiddenError('Not authorized');
           }
           if(error && error.message === 'jwt expired'){
             const decodePayload: any = jwt.decode(args.token);

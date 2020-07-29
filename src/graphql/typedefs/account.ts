@@ -1,10 +1,10 @@
 import { gql } from 'apollo-server';
 
 export default gql `
-  type Query {
+  extend type Query {
     user: User
   }
-  type Mutation {
+  extend type Mutation {
     signup(firstname: String!, lastname: String!, email: String!, password: String!): Token!
     signin(email: String!, password: String!): Token!
     verifyEmail(token: String!): EmailVerify!

@@ -25,7 +25,7 @@ const sendMail = async (receiver:string, message:IMessage) => {
         message: 'An error occured sending mail',
         error
       });
-      throw new Error('An error occured');
+      throw new Error('An error occured sending mail');
   }
 };
 
