@@ -10,8 +10,8 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import { createConnection } from 'typeorm';
 
-import typeDefs from './graphql/typedefs/account';
-import resolvers from './graphql/resolvers/account';
+import typeDefs from './graphql/typedefs';
+import resolvers from './graphql/resolvers';
 
 dotenv.config();
 

@@ -7,6 +7,14 @@ interface IArgs {
   password: string;
 }
 
+interface IArgsProfile {
+  firstname: string;
+  lastname: string;
+  phoneNumber: string;
+  city: string;
+  country: string;
+}
+
 const validate =  {
   signUp: async (args: IArgs) =>{
     const { firstname, lastname, email, password } = args;
@@ -52,6 +60,43 @@ const validate =  {
       if (password.length <= 0) {
         return {
           message: 'Password is Required'
+        };
+      }
+    } catch (error) {
+      winstonEnvLogger.error({
+        message: 'An error occured',
+        error
+      });
+      throw new Error('An error occured');
+    }
+  },
+  updateProfile: async (args: IArgsProfile) => {
+    const { firstname, lastname, phoneNumber, city, country } = args;
+
+    try {
+      if (firstname.length <= 0) {
+        return {
+          message: 'Firstname is Required'
+        };
+      }
+      if (lastname.length <= 0) {
+        return {
+          message: 'Lastname is Required'
+        };
+      }
+      if (phoneNumber.length <= 0) {
+        return {
+          message: 'Phone Number is Required'
+        };
+      }
+      if (city.length <= 0) {
+        return {
+          message: 'City is Required'
+        };
+      }
+      if (country.length <= 0) {
+        return {
+          message: 'Country is Required'
         };
       }
     } catch (error) {

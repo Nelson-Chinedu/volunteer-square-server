@@ -35,7 +35,8 @@ export default class Account extends BaseEntity {
   updatedAt: Date;
 
   @OneToOne(_type => Profile, profile => profile.account, {
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
+    eager: true
   })
   @JoinColumn()
   profile: Profile;

@@ -116,7 +116,7 @@ export default {
           }
         }
 
-        const checkUserEmail = await checkEmail(email);
+        const checkUserEmail: any = await checkEmail(email);
 
         if (!checkUserEmail){
           return {
@@ -133,6 +133,16 @@ export default {
             token: '',
             message: 'E-mail or password is incorrect'
           };
+        }
+
+        if (checkUserEmail) {
+          const { verified } = checkUserEmail;
+          if (verified === 'false'){
+            return {
+              token: '',
+              message: 'Account not verified, Please check your mail for verification link'
+            };
+          }
         }
 
         return {
@@ -155,6 +165,12 @@ export default {
         if (decodeData) {
           const { email } = decodeData;
           const checkUserEmail: any = await checkEmail(email);
+
+          if (checkUserEmail === undefined || checkUserEmail === null) {
+            return {
+              message: 'Not authorized'
+            };
+          }
           if (checkUserEmail){
             const { verified } = checkUserEmail;
             if (verified === 'true'){
