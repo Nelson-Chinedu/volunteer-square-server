@@ -1,4 +1,5 @@
 import winstonEnvLogger from 'winston-env-logger';
+import { ForbiddenError, UserInputError } from 'apollo-server';
 import jwt from 'jsonwebtoken';
 import { getConnection } from 'typeorm';
 
@@ -35,26 +36,20 @@ export default {
           const { email } = decodeData;
           const checkUserEmail: any = await checkEmail(email);
           if (checkUserEmail === undefined || checkUserEmail === null) {
-            return {
-              message: 'Not authorized'
-            };
+            throw new ForbiddenError('Not authorized');
           }
           if (checkUserEmail) {
             const {verified, profile} = checkUserEmail;
 
             if (verified === 'false') {
-              return {
-                message: 'Not authorized'
-              };
+              throw new ForbiddenError('Not authorized');
             }
 
           const checkUserInput = await validate.updateProfile(args);
 
           if (checkUserInput) {
             const { message } = checkUserInput;
-            return {
-              message
-            };
+            throw new UserInputError(message);
           }
             await getConnection()
               .createQueryBuilder()
@@ -84,6 +79,9 @@ export default {
           }
           if (error && error.message === 'invalid signature') {
             throw new Error('Not authorized');
+          }
+          if (error && error.extensions.code === 'BAD_USER_INPUT') {
+            throw new UserInputError(error.message);
           }
           throw new Error('An error occured updating profile');
       }

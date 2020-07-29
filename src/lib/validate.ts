@@ -32,7 +32,7 @@ const validate =  {
       }
       if (email.length <= 0) {
         return {
-          message: 'Email is Required'
+          message: 'Email Address is Required'
         };
       }
       if (password.length <= 0) {
