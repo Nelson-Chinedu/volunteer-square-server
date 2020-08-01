@@ -4,8 +4,8 @@ import {
   Entity,
   PrimaryColumn,
   Column,
-  OneToOne,
   JoinColumn,
+  ManyToOne,
   BeforeInsert
 } from 'typeorm';
 
@@ -31,7 +31,7 @@ export default class Contact extends BaseEntity {
   @Column('timestamp', { precision: 3, default: () => 'CURRENT_TIMESTAMP(3)', onUpdate: 'CURRENT_TIMESTAMP(3)'})
   updatedAt: Date;
 
-  @OneToOne(_type => Event, event => event.contact, {
+  @ManyToOne(_type => Event, event => event.contact, {
     onDelete: 'CASCADE',
     eager: true
   })
