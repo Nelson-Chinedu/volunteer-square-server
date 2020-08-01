@@ -5,10 +5,12 @@ import {
   Column,
   PrimaryColumn,
   BeforeInsert,
-  OneToOne
+  OneToOne,
+  OneToMany
 } from 'typeorm';
 
 import Account from './Account';
+import Event from './Event';
 
 @Entity('Profile')
 export default class Profile extends BaseEntity {
@@ -41,6 +43,9 @@ export default class Profile extends BaseEntity {
 
   @OneToOne(_type => Account, account => account.profile)
   account: Account;
+
+  @OneToMany(_type => Event, event => event.profile)
+  event: Event;
 
   @BeforeInsert()
   addId() {
