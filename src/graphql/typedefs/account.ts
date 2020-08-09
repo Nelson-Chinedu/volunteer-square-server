@@ -7,7 +7,7 @@ export default gql `
   extend type Mutation {
     signup(firstname: String!, lastname: String!, email: String!, password: String!): Token!
     signin(email: String!, password: String!): Token!
-    verifyEmail(token: String!): EmailVerify!
+    verifyEmail: VerificationMessage!
   }
 
   type Token {
@@ -23,7 +23,7 @@ export default gql `
     updatedAt: String
   }
 
-  type EmailVerify {
+  type VerificationMessage {
     message: String!
   }
 `;

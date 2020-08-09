@@ -1,13 +1,9 @@
 import sgMail from '@sendgrid/mail';
 import winstonEnvLogger from 'winston-env-logger';
 
-sgMail.setApiKey(process.env.MAIL_APIKEY as string);
+import IMessage from '../interfaces/IMessage';
 
-interface IMessage {
-  name: string;
-  body: string;
-  link: string;
-}
+sgMail.setApiKey(process.env.MAIL_APIKEY as string);
 
 const sendMail = async (receiver:string, message:IMessage) => {
   try {

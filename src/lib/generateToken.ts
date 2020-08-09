@@ -1,9 +1,11 @@
 import winstonEnvLogger from 'winston-env-logger';
 import jwt from 'jsonwebtoken';
 
-export default async (user: any, secret: string, expiresIn: string) => {
+import IUser from '../interfaces/IUser';
+
+export default (user: IUser, secret: string, expiresIn: string) => {
   try {
-    return await jwt.sign(user, secret, {expiresIn});
+    return jwt.sign(user, secret, {expiresIn});
   } catch (error) {
     winstonEnvLogger.error({
       message: 'An error occured',

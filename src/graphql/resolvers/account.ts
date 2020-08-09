@@ -1,6 +1,5 @@
 import winstonEnvLogger from 'winston-env-logger';
 import { AuthenticationError, UserInputError, ForbiddenError } from 'apollo-server';
-import jwt from 'jsonwebtoken';
 import { getConnection } from 'typeorm';
 
 import checkEmail from '../../lib/checkEmail';
@@ -8,25 +7,12 @@ import generateToken from '../../lib/generateToken';
 import { hashPassword, isValidPassword } from '../../lib/passwordOps';
 import validate from '../../lib/validate';
 import sendMail from '../../lib/sendMail';
+import checkEmailVerification from '../../lib/checkEmailVerification';
 
 import { Profile, Account } from '../../db';
 
-interface IArgs {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-}
-
-interface IContext {
-  secret: string;
-}
-
-interface IVerifyArgs {
-  id: string;
-  email: string;
-  token: string;
-}
+import IArgs from '../../interfaces/IArgs';
+import IContext from '../../interfaces/IContext';
 
 export default {
   Query: {
@@ -40,14 +26,7 @@ export default {
       const { secret } = context;
 
       try {
-        const userInput = await validate.signUp(args);
-
-        if (userInput) {
-          const {message} = userInput;
-          if (message){
-            throw new UserInputError(message);
-          }
-        }
+        await validate.signUp(args);
 
         const checkUserEmail = await checkEmail(email);
 
@@ -74,7 +53,7 @@ export default {
           id: account.id,
           email: account.email
         };
-        const mailToken = await generateToken(payload, secret, '7d');
+        const mailToken = generateToken(payload, secret, '7d');
         const mailMessage = {
           name: `Welcome ${firstname} ${lastname}`,
           body: 'Your account have been created suucessfully, click the link below to verify',
@@ -83,7 +62,6 @@ export default {
 
         await sendMail(email, mailMessage);
         return {
-          token: generateToken({firstname,lastname,email}, secret , '15m'),
           message: 'Account created successfully, A verification mail has been sent to the email provided'
         };
       } catch (error) {
@@ -91,13 +69,11 @@ export default {
           message: 'An error occured',
           error
         });
+
         if (error && error.message === 'An error occured sending mail') {
           throw new Error('Account created successfully, But verification email was not sent successfully');
         }
-        if (error && error.extensions.code === 'BAD_USER_INPUT') {
-          throw new UserInputError(error.message);
-        }
-        throw new Error('An error occured creating account');
+        throw error;
       }
     },
     signin: async (_parent: any, args: IArgs, context: IContext ) => {
@@ -105,18 +81,11 @@ export default {
       const { secret } = context;
 
       try {
-        const userInput = await validate.signIn(args);
-
-        if (userInput) {
-          const {message} = userInput;
-          if (message){
-            throw new UserInputError(message);
-          }
-        }
+        await validate.signIn(args);
 
         const checkUserEmail: any = await checkEmail(email);
 
-        if (!checkUserEmail){
+        if (!checkUserEmail) {
           throw new AuthenticationError('E-mail or password is incorrect');
         }
 
@@ -129,7 +98,8 @@ export default {
 
         if (checkUserEmail) {
           const { verified } = checkUserEmail;
-          if (verified === 'false'){
+
+          if (verified === 'false') {
             throw new AuthenticationError('Account not verified, Please check your mail for verification link');
           }
         }
@@ -143,81 +113,46 @@ export default {
           message: 'An error occured',
           error
         });
-        if (error && error.extensions.code === 'BAD_USER_INPUT') {
-          throw new UserInputError(error.message);
-        }
+
         if (error && error.extensions.code === 'UNAUTHENTICATED') {
           throw new AuthenticationError(error.message);
         }
-        throw new Error('An error occured logging in');
+
+        throw error;
       }
     },
-    verifyEmail: async (_parent: any, args: IVerifyArgs, context: IContext) => {
-      const { secret } = context;
+    verifyEmail: async (_parent: any, _args: IArgs, context: IContext) => {
+      const { secret, req } = context;
 
       try {
-        const decodeData: any = jwt.verify(args.token, secret);
-        if (decodeData) {
-          const { email } = decodeData;
-          const checkUserEmail: any = await checkEmail(email);
+        const user: any = await checkEmailVerification(req, secret);
+        if (user) {
+          const { id, message } = user;
 
-          if (checkUserEmail === undefined || checkUserEmail === null) {
-            throw new ForbiddenError('Not authorized');
+          if (message) {
+            return { message };
           }
-          if (checkUserEmail){
-            const { verified } = checkUserEmail;
-            if (verified === 'true'){
-              return {
-                message: 'Your email address has been verified'
-              };
-            }
-            await getConnection()
-              .createQueryBuilder()
-              .update(Account)
-              .set({verified: true})
-              .where('email = :email', {email})
-              .execute();
+
+          if (!id) {
+            throw new ForbiddenError(user);
+          }
+
+          await getConnection()
+            .createQueryBuilder()
+            .update(Account)
+            .set({verified: true})
+            .where('id = :id', {id})
+            .execute();
             return {
               message: 'Account verified'
             };
-          }
         }
       } catch (error) {
           winstonEnvLogger.error({
             message: 'An error occured',
             error
           });
-          if(error && error.message === 'invalid signature'){
-            throw new ForbiddenError('Not authorized');
-          }
-          if(error && error.message === 'invalid token'){
-            throw new ForbiddenError('Not authorized');
-          }
-          if(error && error.message === 'jwt expired'){
-            const decodePayload: any = jwt.decode(args.token);
-
-            try {
-              if (decodePayload){
-                const { id, email } = decodePayload;
-                const payload = {
-                  id,
-                  email
-                };
-                const mailToken = await generateToken(payload, secret, '7d');
-                const mailMessage = {
-                  name: `Dear ${email}`,
-                  body: 'Click the link below to verify your account',
-                  link: `${mailToken}`
-                };
-                await sendMail(email, mailMessage);
-                return {
-                  message: 'A new verification link has been sent to your email'
-                };
-              }
-            }catch (error) {
-              throw new Error('An error occured verifying mail');
-            }
-          }
+          throw error;
       }
     }
   }

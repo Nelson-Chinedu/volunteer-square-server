@@ -12,6 +12,7 @@ import { createConnection } from 'typeorm';
 
 import typeDefs from './graphql/typedefs';
 import resolvers from './graphql/resolvers';
+import jwtAuthMiddleware from './middleware/jwtAuthMiddleware';
 
 dotenv.config();
 
@@ -24,14 +25,16 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(winstonEnvLogger.logger());
+app.use(jwtAuthMiddleware);
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: async({req}) => {
-    if (req){
+    if (req) {
       return {
         secret: process.env.SECRET,
+        req
       };
     }
   }

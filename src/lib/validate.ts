@@ -1,19 +1,7 @@
 import winstonEnvLogger from 'winston-env-logger';
+import { UserInputError } from 'apollo-server';
 
-interface IArgs {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-}
-
-interface IArgsProfile {
-  firstname: string;
-  lastname: string;
-  phoneNumber: string;
-  city: string;
-  country: string;
-}
+import IArgs from '../interfaces/IArgs';
 
 const validate =  {
   signUp: async (args: IArgs) =>{
@@ -21,30 +9,25 @@ const validate =  {
 
     try {
       if (firstname.length <= 0) {
-        return {
-          message: 'Firstname is Required'
-        };
+        throw new UserInputError('Firstname is Required');
       }
       if (lastname.length <= 0) {
-        return {
-          message: 'Lastname is Required'
-        };
+        throw new UserInputError('Lastname is Required');
       }
       if (email.length <= 0) {
-        return {
-          message: 'Email Address is Required'
-        };
+        throw new UserInputError('Email Address is Required');
       }
       if (password.length <= 0) {
-        return {
-          message: 'Password is Required'
-        };
+        throw new UserInputError('Password is Required');
       }
     } catch (error) {
       winstonEnvLogger.error({
         message: 'An error occured',
         error
       });
+      if (error && error.extensions.code === 'BAD_USER_INPUT') {
+        throw new UserInputError(error.message);
+      }
       throw new Error('An error occured');
     }
   },
@@ -53,57 +36,49 @@ const validate =  {
 
     try {
       if (email.length <= 0) {
-        return {
-          message: 'Email Address is Required'
-        };
+        throw new UserInputError('Email Address is Required');
       }
       if (password.length <= 0) {
-        return {
-          message: 'Password is Required'
-        };
+        throw new UserInputError('Password is Required');
       }
     } catch (error) {
       winstonEnvLogger.error({
         message: 'An error occured',
         error
       });
+      if (error && error.extensions.code === 'BAD_USER_INPUT') {
+        throw new UserInputError(error.message);
+      }
       throw new Error('An error occured');
     }
   },
-  updateProfile: async (args: IArgsProfile) => {
+  updateProfile: async (args: IArgs) => {
     const { firstname, lastname, phoneNumber, city, country } = args;
 
     try {
       if (firstname.length <= 0) {
-        return {
-          message: 'Firstname is Required'
-        };
+        throw new UserInputError('Firstname is Required');
       }
       if (lastname.length <= 0) {
-        return {
-          message: 'Lastname is Required'
-        };
+        throw new UserInputError('Lastname is Required');
       }
       if (phoneNumber.length <= 0) {
-        return {
-          message: 'Phone Number is Required'
-        };
+        throw new UserInputError('Phone Number is Required');
       }
       if (city.length <= 0) {
-        return {
-          message: 'City is Required'
-        };
+        throw new UserInputError('City is Required');
       }
       if (country.length <= 0) {
-        return {
-          message: 'Country is Required'
-        };
+        throw new UserInputError('Country is Required');
       }
     } catch (error) {
       winstonEnvLogger.error({
         message: 'An error occured',
         error
       });
+      if (error && error.extensions.code === 'BAD_USER_INPUT') {
+        throw new UserInputError(error.message);
+      }
       throw new Error('An error occured');
     }
   }
