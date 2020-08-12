@@ -5,7 +5,7 @@ import IMessage from '../interfaces/IMessage';
 
 sgMail.setApiKey(process.env.MAIL_APIKEY as string);
 
-const sendMail = async (receiver:string, message:IMessage) => {
+const sendMail = async (receiver: string, message: IMessage) => {
   try {
     const msg = {
       to: receiver,
@@ -17,11 +17,11 @@ const sendMail = async (receiver:string, message:IMessage) => {
     };
     await sgMail.send(msg);
   } catch (error) {
-      winstonEnvLogger.error({
-        message: 'An error occured sending mail',
-        error
-      });
-      throw new Error('An error occured sending mail');
+    winstonEnvLogger.error({
+      message: 'An error occured sending mail',
+      error,
+    });
+    throw new Error('An error occured sending mail');
   }
 };
 

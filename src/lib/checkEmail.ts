@@ -6,13 +6,13 @@ const checkEmail = async (email: string) => {
   try {
     return await Account.findOne({
       where: {
-        email
-      }
+        email,
+      },
     });
   } catch (error) {
     winstonEnvLogger.error({
       message: 'An error occured',
-      error
+      error,
     });
     throw new Error('An error occured');
   }

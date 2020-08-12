@@ -3,12 +3,11 @@ import winstonEnvLogger from 'winston-env-logger';
 import verifyEmail from './verifyEmail';
 import sendMail from './sendMail';
 import generateToken from './generateToken';
-
-import { decodeToken } from '../lib/verifyToken';
+import { decodeToken } from './checkToken';
 
 import IReq from '../interfaces/IReq';
 
-export default async (req: IReq, secret: string) => {
+export const emailVerification = async (req:IReq) => {
   const { user } = req;
 
   try {
@@ -25,7 +24,7 @@ export default async (req: IReq, secret: string) => {
           id,
           email
         };
-        const mailToken = generateToken(payload, secret, '7d');
+        const mailToken = generateToken(payload, process.env.EMAIL_TOKEN_SECRET!, '7d');
         const mailMessage = {
           name: `Dear ${email}`,
           body: 'Click the link below to verify your account',

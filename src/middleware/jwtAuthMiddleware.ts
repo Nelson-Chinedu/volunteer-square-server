@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { verifyToken } from '../lib/verifyToken';
+import { verifyToken } from '../lib/checkToken';
 
 export default async (req: Request, _res: Response, next: NextFunction) => {
   const bearerToken: any = req.headers.authorization;
@@ -8,16 +8,15 @@ export default async (req: Request, _res: Response, next: NextFunction) => {
   if (!bearerToken) {
     return next();
   }
-  const accessToken = bearerToken.split(' ')[0];
+
+  const accessToken = bearerToken.split(' ')[1];
   try {
-    const decodeData = verifyToken(accessToken);
+    const decodeData = verifyToken(accessToken, process.env.ACCESS_TOKEN_SECRET!);
     req.user = decodeData;
   } catch (error) {
-
     if (error.message === 'jwt expired') {
-      req.user = {accessToken};
+      req.user = { accessToken };
     }
-
   }
   return next();
 };

@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
-export const verifyToken = (token: string) => {
-  return jwt.verify(token, process.env.SECRET as string);
+export const verifyToken = (token: string, secret: any) => {
+  return jwt.verify(token, secret);
 };
 
 export const decodeToken = (token: string) => {

@@ -7,5 +7,4 @@ export default interface IArgs {
   phoneNumber: string;
   city: string;
   country: string;
-  token: string;
 }
