@@ -1,5 +1,5 @@
-import winstonEnvLogger from 'winston-env-logger';
 import bcrypt from 'bcrypt';
+import winstonEnvLogger from 'winston-env-logger';
 
 export const hashPassword = async (password: string) => {
   const salt = 10;

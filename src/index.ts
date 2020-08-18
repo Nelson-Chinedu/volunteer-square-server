@@ -11,10 +11,8 @@ import cookieParser from 'cookie-parser';
 import { createConnection } from 'typeorm';
 
 import schema from './graphql/schema';
-import jwtAuthMiddleware from './middleware/jwtAuthMiddleware';
-import { verifyToken } from './lib/checkToken';
-import checkEmail from './lib/checkEmail';
-import { createAccessToken, createRefreshToken, sendRefreshToken } from './lib/auth';
+import jwtAuthMiddleware from './restful/middleware/jwtAuthMiddleware';
+import routes from './restful/routes';
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -37,43 +35,14 @@ const server = new ApolloServer({
   context: async({req, res}) => {
     if (req) {
       return {
-        secret: process.env.SECRET,
         req,
         res
       };
     }
   }
 });
-
+routes(app);
 server.applyMiddleware({app, path: '/graphql'});
-
-app.post('/refresh_token', async (req, res) => {
-  const token = req.cookies.sotAmJViUg;
-  if (!token) {
-    winstonEnvLogger.error({
-      message: 'token missing',
-    });
-    return res.status(400).send({token: false, accessToken: ''});
-  }
-  try {
-    const payload: any = verifyToken(token, process.env.REFRESH_TOKEN_SECRET!);
-    if (payload) {
-      const { email } = payload;
-      const user: any = await checkEmail(email);
-
-      sendRefreshToken(res, createRefreshToken(user));
-      return res.send({token: true, accessToken: createAccessToken(user)});
-    }
-  } catch (error) {
-    winstonEnvLogger.error({
-      message: 'An error occured',
-      error
-    });
-    if (error) {
-      return res.status(400).send({token: false, accessToken: ''});
-    }
-  }
-});
 
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);

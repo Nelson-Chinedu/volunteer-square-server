@@ -1,4 +1,8 @@
-import { GraphQLObjectType, GraphQLString, GraphQLNonNull } from 'graphql';
+import {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLNonNull
+} from 'graphql';
 
 import messageType from '../generics/message';
 
