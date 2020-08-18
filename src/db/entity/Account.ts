@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 
 import Profile from './Profile';
+import { hashPassword } from '../../lib/passwordOps';
 
 @Entity('Account')
 export default class Account extends BaseEntity {
@@ -22,10 +23,10 @@ export default class Account extends BaseEntity {
   @Column('varchar', { length: 255})
   password: string;
 
-  @Column('varchar', { default: false, length: 10 })
+  @Column({ default: false })
   blocked: boolean;
 
-  @Column('varchar', { default: false, length: 10 })
+  @Column({ default: false })
   verified: boolean;
 
   @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP(3)' })
@@ -44,5 +45,10 @@ export default class Account extends BaseEntity {
   @BeforeInsert()
   addId() {
     this.id = uuidv4();
+  }
+
+  @BeforeInsert()
+  async hashPasswordBeforeInsert(){
+    this.password = await hashPassword(this.password);
   }
 }

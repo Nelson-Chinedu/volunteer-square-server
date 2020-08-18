@@ -1,42 +1,47 @@
+import 'dotenv/config';
 import 'reflect-metadata';
-import dotenv from 'dotenv';
 import http from 'http';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import bodyParser from 'body-parser';
-import cors from 'cors';
+import cors, { CorsOptions } from 'cors';
 import winstonEnvLogger from 'winston-env-logger';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import { createConnection } from 'typeorm';
 
-import typeDefs from './graphql/typedefs';
-import resolvers from './graphql/resolvers';
-
-dotenv.config();
+import schema from './graphql/schema';
+import jwtAuthMiddleware from './restful/middleware/jwtAuthMiddleware';
+import routes from './restful/routes';
 
 const app = express();
 const port = process.env.PORT || 8000;
+const corsOptions:CorsOptions = {
+  origin: true,
+  credentials: true,
+  optionsSuccessStatus: 200
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(helmet());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(winstonEnvLogger.logger());
+app.use(jwtAuthMiddleware);
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context: async({req}) => {
-    if (req){
+  schema,
+  context: async({req, res}) => {
+    if (req) {
       return {
-        secret: process.env.SECRET,
+        req,
+        res
       };
     }
   }
 });
-
+routes(app);
 server.applyMiddleware({app, path: '/graphql'});
 
 const httpServer = http.createServer(app);
