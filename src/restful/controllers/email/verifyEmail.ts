@@ -8,7 +8,7 @@ import { verifyEmailToken } from '../../../lib/token';
 import { respondWithWarning, respondWithSuccess } from '../../../lib/httpResponse';
 
 const verifyEmail = async (req: Request, res: Response) => {
-  const { token } = req.query;
+  const { token } = req.body;
   try {
     const verifiedToken:any = verifyEmailToken(token as string);
     const { id } = verifiedToken;

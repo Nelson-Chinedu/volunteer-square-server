@@ -28,7 +28,7 @@ export default (router: Router) => {
     validationMiddleware,
     signinAuth
   );
-  router.get(
+  router.post(
     '/api/v1/verify-email/',
     verifyEmailMiddleware,
     verifyEmail
