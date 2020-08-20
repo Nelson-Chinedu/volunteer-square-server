@@ -4,7 +4,7 @@ import { verifyEmailToken } from '../../lib/token';
 import { respondWithWarning } from '../../lib/httpResponse';
 
 export default (req: Request, res: Response, next: NextFunction) => {
-  const { token } = req.query;
+  const { token } = req.body;
 
   try {
     const isValid = verifyEmailToken(token as string);
