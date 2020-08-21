@@ -19,10 +19,10 @@ export default class Event extends BaseEntity {
   id: string;
 
   @Column('text')
-  eventName: string;
+  name: string;
 
   @Column('text')
-  eventDescription: string;
+  description: string;
 
   @Column('varchar', { length: 50 })
   category: string;
