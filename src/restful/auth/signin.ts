@@ -58,7 +58,7 @@ const signin = async (req: Request, res: Response) => {
     const token = createToken(
       { id: account.id },
       process.env.JWT_KEY as string,
-      '15m'
+      '7d'
     );
     return respondWithSuccess(res, 200, 'Logged in successfully', { token });
   } catch (error) {
