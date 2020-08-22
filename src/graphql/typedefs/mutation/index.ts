@@ -2,6 +2,7 @@ import { GraphQLObjectType } from 'graphql';
 import { ForbiddenError } from 'apollo-server';
 
 import ClientMutation from './client';
+import PublicMutation from './public';
 
 export default new GraphQLObjectType({
   name: 'Mutation',
@@ -15,6 +16,10 @@ export default new GraphQLObjectType({
         }
         throw new ForbiddenError('Not authorized');
       },
+    },
+    public: {
+      type: PublicMutation,
+      resolve: () => ({}),
     },
   }),
 });

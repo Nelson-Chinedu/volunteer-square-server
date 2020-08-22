@@ -5,9 +5,9 @@ import { Account, Event } from '../../../../db';
 
 import getEventError from '../../../../lib/getEventError';
 
-import IResolver from '../../../../interfaces/IResolverType';
+import ResolverType from '../../../../interfaces/IResolverType';
 
-const createEvent: IResolver = async (
+const createEvent: ResolverType = async (
   _parent,
   args,
   {
