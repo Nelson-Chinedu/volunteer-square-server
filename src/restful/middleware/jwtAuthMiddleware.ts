@@ -4,7 +4,7 @@ import { verifyToken } from '../../lib/token';
 import authenticateUser from '../../lib/authenticateRequest';
 
 export default async (req: Request, _res: Response, next: NextFunction) => {
-  const bearerToken: string | undefined  = req.headers.authorization;
+  const bearerToken: string | undefined = req.headers.authorization;
   if (!bearerToken) {
     return next();
   }

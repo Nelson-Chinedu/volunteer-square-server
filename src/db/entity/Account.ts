@@ -6,10 +6,11 @@ import {
   Column,
   BeforeInsert,
   OneToOne,
-  JoinColumn
+  JoinColumn,
 } from 'typeorm';
 
 import Profile from './Profile';
+
 import { hashPassword } from '../../lib/passwordOps';
 
 @Entity('Account')
@@ -17,10 +18,10 @@ export default class Account extends BaseEntity {
   @PrimaryColumn('uuid')
   id: string;
 
-  @Column('varchar', { length: 255, unique: true})
+  @Column('varchar', { length: 255, unique: true })
   email: string;
 
-  @Column('varchar', { length: 255})
+  @Column('varchar', { length: 255 })
   password: string;
 
   @Column({ default: false })
@@ -32,12 +33,16 @@ export default class Account extends BaseEntity {
   @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP(3)' })
   createdAt: Date;
 
-  @Column('timestamp', { precision: 3, default: () => 'CURRENT_TIMESTAMP(3)', onUpdate: 'CURRENT_TIMESTAMP(3)'})
+  @Column('timestamp', {
+    precision: 3,
+    default: () => 'CURRENT_TIMESTAMP(3)',
+    onUpdate: 'CURRENT_TIMESTAMP(3)',
+  })
   updatedAt: Date;
 
   @OneToOne(_type => Profile, profile => profile.account, {
     onDelete: 'CASCADE',
-    eager: true
+    eager: true,
   })
   @JoinColumn()
   profile: Profile;
@@ -48,7 +53,7 @@ export default class Account extends BaseEntity {
   }
 
   @BeforeInsert()
-  async hashPasswordBeforeInsert(){
+  async hashPasswordBeforeInsert() {
     this.password = await hashPassword(this.password);
   }
 }

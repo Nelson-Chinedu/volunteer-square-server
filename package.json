@@ -5,9 +5,11 @@
   "author": "Nelson Chinedu <egwuchinedu69@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "",
+    "start": "cross-env NODE_ENV=production yarn build && node build/index.js",
     "dev": "cross-env NODE_ENV=development nodemon",
-    "tslint": "tslint -c tslint.json 'src/**/*.ts'"
+    "tslint": "tslint -c tslint.json 'src/**/*.ts'",
+    "build": "yarn build:js",
+    "build:js": "babel src --out-dir build --extensions \".ts,.js\" --source-maps inline"
   },
   "dependencies": {
     "@babel/polyfill": "^7.10.4",
@@ -29,6 +31,7 @@
     "graphql": "^15.3.0",
     "graphql-resolvers": "^0.4.2",
     "helmet": "^3.23.3",
+    "ipinfo": "^1.5.0",
     "jimp": "^0.14.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.27.0",

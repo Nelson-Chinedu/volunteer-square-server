@@ -6,7 +6,7 @@ import {
   PrimaryColumn,
   BeforeInsert,
   OneToOne,
-  OneToMany
+  OneToMany,
 } from 'typeorm';
 
 import Account from './Account';
@@ -38,7 +38,11 @@ export default class Profile extends BaseEntity {
   @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP(3)' })
   createdAt: Date;
 
-  @Column('timestamp', { precision: 3, default: () => 'CURRENT_TIMESTAMP(3)', onUpdate: 'CURRENT_TIMESTAMP(3)'})
+  @Column('timestamp', {
+    precision: 3,
+    default: () => 'CURRENT_TIMESTAMP(3)',
+    onUpdate: 'CURRENT_TIMESTAMP(3)',
+  })
   updatedAt: Date;
 
   @OneToOne(_type => Account, account => account.profile)

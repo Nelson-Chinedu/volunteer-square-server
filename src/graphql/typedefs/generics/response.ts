@@ -1,8 +1,4 @@
-import {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLNonNull
-} from 'graphql';
+import { GraphQLObjectType, GraphQLString, GraphQLNonNull } from 'graphql';
 
 export default new GraphQLObjectType({
   name: 'response',

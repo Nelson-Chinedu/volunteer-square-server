@@ -7,7 +7,7 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
-  BeforeInsert
+  BeforeInsert,
 } from 'typeorm';
 
 import Profile from './Profile';
@@ -30,21 +30,25 @@ export default class Event extends BaseEntity {
   @Column('varchar', { length: 50 })
   location: string;
 
-  @Column('varchar', {  length: 100 })
+  @Column('varchar', { length: 100 })
   time: string;
 
-  @Column('varchar',{ length: 100 })
+  @Column('varchar', { length: 100 })
   date: string;
 
   @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP(3)' })
   createdAt: Date;
 
-  @Column('timestamp', { precision: 3, default: () => 'CURRENT_TIMESTAMP(3)', onUpdate: 'CURRENT_TIMESTAMP(3)'})
+  @Column('timestamp', {
+    precision: 3,
+    default: () => 'CURRENT_TIMESTAMP(3)',
+    onUpdate: 'CURRENT_TIMESTAMP(3)',
+  })
   updatedAt: Date;
 
   @ManyToOne(_type => Profile, profile => profile.event, {
     onDelete: 'CASCADE',
-    eager: true
+    eager: true,
   })
   @JoinColumn()
   profile: Profile;

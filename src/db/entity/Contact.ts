@@ -6,7 +6,7 @@ import {
   Column,
   JoinColumn,
   ManyToOne,
-  BeforeInsert
+  BeforeInsert,
 } from 'typeorm';
 
 import Event from './Event';
@@ -28,12 +28,16 @@ export default class Contact extends BaseEntity {
   @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP(3)' })
   createdAt: Date;
 
-  @Column('timestamp', { precision: 3, default: () => 'CURRENT_TIMESTAMP(3)', onUpdate: 'CURRENT_TIMESTAMP(3)'})
+  @Column('timestamp', {
+    precision: 3,
+    default: () => 'CURRENT_TIMESTAMP(3)',
+    onUpdate: 'CURRENT_TIMESTAMP(3)',
+  })
   updatedAt: Date;
 
   @ManyToOne(_type => Event, event => event.contact, {
     onDelete: 'CASCADE',
-    eager: true
+    eager: true,
   })
   @JoinColumn()
   event: Event;
