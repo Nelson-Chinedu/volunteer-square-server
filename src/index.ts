@@ -1,4 +1,3 @@
-import '@babel/polyfill';
 import 'reflect-metadata';
 import 'dotenv/config';
 import http from 'http';

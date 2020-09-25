@@ -6,27 +6,16 @@
   "license": "MIT",
   "scripts": {
     "start": "cross-env NODE_ENV=production node build/src/index.js",
-    "dev": "cross-env NODE_ENV=production nodemon",
+    "dev": "cross-env NODE_ENV=development nodemon",
     "tslint": "tslint -c tslint.json 'src/**/*.ts'",
-    "build": "yarn build:js",
+    "build": "tsc",
     "build:js": "babel src --out-dir build --extensions \".ts,.js\" --source-maps inline"
   },
   "dependencies": {
-    "@babel/cli": "^7.11.6",
-    "@babel/core": "^7.11.6",
-    "@babel/node": "^7.10.5",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/plugin-proposal-decorators": "^7.10.5",
-    "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
-    "@babel/polyfill": "^7.11.5",
-    "@babel/preset-env": "^7.11.5",
-    "@babel/preset-typescript": "^7.10.4",
-    "@babel/runtime": "^7.10.4",
     "@hapi/joi": "^17.1.1",
     "@sendgrid/mail": "^7.2.1",
     "apollo-server": "^2.15.1",
     "apollo-server-express": "^2.15.1",
-    "babel-plugin-transform-typescript-metadata": "^0.3.0",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "cloudinary": "^1.22.0",
@@ -50,10 +39,10 @@
     "passport-local": "^1.0.0",
     "pg": "^8.3.0",
     "reflect-metadata": "^0.1.13",
-    "sequelize": "^6.3.0",
     "typeorm": "^0.2.25",
     "uuid": "^8.2.0",
-    "winston-env-logger": "^1.0.6"
+    "winston-env-logger": "^1.0.6",
+    "typescript": "^3.9.6"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
@@ -74,7 +63,6 @@
     "@types/validator": "^13.1.0",
     "nodemon": "^2.0.4",
     "ts-node": "^8.10.2",
-    "tslint": "^6.1.2",
-    "typescript": "^3.9.6"
+    "tslint": "^6.1.2"
   }
 }
