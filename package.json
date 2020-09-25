@@ -1,18 +1,17 @@
 {
   "name": "volunteer-sqaure-server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "build/index.js",
   "author": "Nelson Chinedu <egwuchinedu69@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "",
+    "start": "cross-env NODE_ENV=production node build/src/index.js",
     "dev": "cross-env NODE_ENV=development nodemon",
-    "tslint": "tslint -c tslint.json 'src/**/*.ts'"
+    "tslint": "tslint -c tslint.json 'src/**/*.ts'",
+    "build": "tsc",
+    "build:js": "babel src --out-dir build --extensions \".ts,.js\" --source-maps inline"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.10.4",
-    "@babel/preset-typescript": "^7.10.4",
-    "@babel/runtime": "^7.10.4",
     "@hapi/joi": "^17.1.1",
     "@sendgrid/mail": "^7.2.1",
     "apollo-server": "^2.15.1",
@@ -29,6 +28,7 @@
     "graphql": "^15.3.0",
     "graphql-resolvers": "^0.4.2",
     "helmet": "^3.23.3",
+    "ipinfo": "^1.5.0",
     "jimp": "^0.14.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.27.0",
@@ -39,18 +39,12 @@
     "passport-local": "^1.0.0",
     "pg": "^8.3.0",
     "reflect-metadata": "^0.1.13",
-    "sequelize": "^6.3.0",
     "typeorm": "^0.2.25",
     "uuid": "^8.2.0",
-    "winston-env-logger": "^1.0.6"
+    "winston-env-logger": "^1.0.6",
+    "typescript": "^3.9.6"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.4",
-    "@babel/core": "^7.10.4",
-    "@babel/node": "^7.10.4",
-    "@babel/plugin-transform-runtime": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "@babel/register": "^7.10.4",
     "@types/bcrypt": "^3.0.0",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.6",
@@ -65,11 +59,10 @@
     "@types/passport-facebook": "^2.1.10",
     "@types/passport-google-oauth20": "^2.0.3",
     "@types/passport-local": "^1.0.33",
-    "@types/uuid": "^8.0.0",
+    "@types/uuid": "^8.3.0",
     "@types/validator": "^13.1.0",
     "nodemon": "^2.0.4",
     "ts-node": "^8.10.2",
-    "tslint": "^6.1.2",
-    "typescript": "^3.9.6"
+    "tslint": "^6.1.2"
   }
 }

@@ -12,6 +12,6 @@ export default (req: Request, res: Response, next: NextFunction) => {
       return next();
     }
   } catch (error) {
-      return respondWithWarning(res, 400, 'Not authorized');
+    return respondWithWarning(res, 400, 'Not authorized');
   }
 };

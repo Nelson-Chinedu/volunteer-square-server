@@ -8,13 +8,10 @@ const signinValidation = [
     .withMessage('Email address is required')
     .isEmail()
     .normalizeEmail({
-      all_lowercase: true
+      all_lowercase: true,
     })
     .withMessage('Please enter a valid email address'),
-  body('password')
-    .not()
-    .isEmpty()
-    .withMessage('Password is required')
+  body('password').not().isEmpty().withMessage('Password is required'),
 ];
 
 export default signinValidation;

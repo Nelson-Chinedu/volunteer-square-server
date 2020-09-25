@@ -6,7 +6,7 @@ import IMessage from '../interfaces/IMessage';
 sgMail.setApiKey(process.env.SENDGRID_APIKEY as string);
 
 const sendMail = async (receiver: string, data: IMessage): Promise<void> => {
-  const {name, body, verificationLink, route, query} = data;
+  const { name, body, verificationLink, route, query } = data;
   try {
     const msg = {
       to: receiver,
@@ -15,7 +15,7 @@ const sendMail = async (receiver: string, data: IMessage): Promise<void> => {
       html: `<p>${name}</p>
              <p>${body} </p>
              <a
-              href='http://localhost:8000/api/v1/${route}/?${query}=${verificationLink}'>
+              href='http://localhost:3000/auth/${route}?${query}=${verificationLink}'>
                 ${verificationLink}
              </a>`,
     };

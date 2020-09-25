@@ -1,16 +1,8 @@
 import { body } from 'express-validator';
 
 const signupValidation = [
-  body('firstname')
-    .not()
-    .isEmpty()
-    .trim()
-    .withMessage('Firstname is required'),
-  body('lastname')
-    .not()
-    .isEmpty()
-    .trim()
-    .withMessage('Lastname is required'),
+  body('firstname').not().isEmpty().trim().withMessage('Firstname is required'),
+  body('lastname').not().isEmpty().trim().withMessage('Lastname is required'),
   body('email')
     .not()
     .isEmpty()
@@ -18,7 +10,7 @@ const signupValidation = [
     .withMessage('Email address is required')
     .isEmail()
     .normalizeEmail({
-      all_lowercase: true
+      all_lowercase: true,
     })
     .withMessage('Please enter a valid email address'),
   body('password')
@@ -26,9 +18,9 @@ const signupValidation = [
     .isEmpty()
     .withMessage('Password is required')
     .isLength({
-      min: 8
+      min: 8,
     })
-    .withMessage('Password must be more than 8 chars')
+    .withMessage('Password must be more than 8 chars'),
 ];
 
 export default signupValidation;

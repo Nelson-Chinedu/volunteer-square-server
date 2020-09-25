@@ -23,24 +23,26 @@ const signup = async (req: Request, res: Response) => {
     });
 
     await newAccount.save();
-    const token: string = createToken(
-      { id: newAccount.id },
-      process.env.VERIFICATION_JWT_kEY as string,
-      '7d'
-    );
-    const mailMessage = {
-      name: `Welcome ${firstname} ${lastname}`,
-      body: 'Please click the link below to verify account',
-      route: 'verify-email',
-      query: 'token',
-      verificationLink: `${token}`,
-    };
+    if(process.env.NODE_ENV === 'production'){
+      const token: string = createToken(
+        { id: newAccount.id },
+        process.env.VERIFICATION_JWT_kEY as string,
+        '7d'
+      );
+      const mailMessage = {
+        name: `Welcome ${firstname} ${lastname}`,
+        body: 'Please click the link below to verify account',
+        route: 'verify-email',
+        query: 'token',
+        verificationLink: `${token}`,
+      };
 
-    await sendToEmail(email, mailMessage);
+      await sendToEmail(email, mailMessage);
+    }
     return respondWithSuccess(
       res,
       201,
-      'Please check your email to verify account'
+      `We have sent an email to ${email}. Please check your mail for next step`
     );
   } catch (error) {
     if (error && error.message === 'An error occured sending mail') {

@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import signupAuth from '../controllers/user/signup';
 import verifyEmail from '../controllers/email/verifyEmail';
 
@@ -10,9 +11,6 @@ import signupValidation from '../validations/signupValidation';
 import signinValidation from '../validations/signinValidation';
 
 import signinAuth from '../auth/signin';
-// import imageUpload from '../controllers/user/imageUpload';
-import parser from '../controllers/user/imageUpload';
-import getImage from '../controllers/user/getImage';
 
 export default (router: Router) => {
   router.post(
@@ -28,9 +26,5 @@ export default (router: Router) => {
     validationMiddleware,
     signinAuth
   );
-  router.post(
-    '/api/v1/verify-email/',
-    verifyEmailMiddleware,
-    verifyEmail
-  );
+  router.post('/api/v1/verify-email/', verifyEmailMiddleware, verifyEmail);
 };

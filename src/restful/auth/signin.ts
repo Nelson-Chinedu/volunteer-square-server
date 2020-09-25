@@ -70,7 +70,7 @@ const signin = async (req: Request, res: Response) => {
       return respondWithWarning(
         res,
         500,
-        'Server Error'
+        'Account not verified and verification link was not sent succesfully, please try again'
       );
     }
     return respondWithWarning(res, 500, 'Login not successful');

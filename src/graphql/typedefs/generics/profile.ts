@@ -1,21 +1,16 @@
-import {
-  GraphQLObjectType,
-  GraphQLNonNull,
-  GraphQLID,
-  GraphQLString,
-} from 'graphql';
+import { GraphQLObjectType, GraphQLID, GraphQLString } from 'graphql';
 
 export default new GraphQLObjectType({
   name: 'profile',
   fields: {
     id: {
-      type: new GraphQLNonNull(GraphQLID),
+      type: GraphQLID,
     },
     firstname: {
-      type: new GraphQLNonNull(GraphQLString),
+      type: GraphQLString,
     },
     lastname: {
-      type: new GraphQLNonNull(GraphQLString),
+      type: GraphQLString,
     },
     city: {
       type: GraphQLString,
