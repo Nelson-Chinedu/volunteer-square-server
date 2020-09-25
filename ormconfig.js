@@ -8,8 +8,8 @@ let connString =
     : process.env.DB_PROD_URL;
 
 const getEnvVariables = {
-  logging: isDevEnv ? true : false,
-  synchronize: isDevEnv ? true : false,
+  logging: isDevEnv() ? true : false,
+  synchronize: isDevEnv() ? true : false,
 };
 
 const entities = isDevEnv()
