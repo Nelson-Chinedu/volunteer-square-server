@@ -9,6 +9,7 @@ import winstonEnvLogger from 'winston-env-logger';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import { createConnection } from 'typeorm';
+import passport from 'passport';
 
 import schema from './graphql/schema';
 
@@ -28,6 +29,8 @@ app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(winstonEnvLogger.logger());
 app.use(jwtAuthMiddleware);
 

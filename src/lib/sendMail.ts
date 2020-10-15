@@ -12,12 +12,15 @@ const sendMail = async (receiver: string, data: IMessage): Promise<void> => {
       to: receiver,
       from: 'Volunteer Square <no-reply@volunteersquare.com>',
       subject: 'Volunteer Square <no-reply@volunteersquare.com>',
-      html: `<p>${name}</p>
+      html: verificationLink ?
+            `<p>${name}</p>
              <p>${body} </p>
              <a
               href='http://localhost:3000/auth/${route}?${query}=${verificationLink}'>
                 ${verificationLink}
-             </a>`,
+             </a>`:
+             `<p>${name}</p>
+              <p>${body} </p>`
     };
     await sgMail.send(msg);
   } catch (error) {
