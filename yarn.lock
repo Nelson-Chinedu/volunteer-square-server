@@ -1602,6 +1602,11 @@ dasherize@2.0.0:
   resolved "https://registry.yarnpkg.com/dasherize/-/dasherize-2.0.0.tgz#6d809c9cd0cf7bb8952d80fc84fa13d47ddb1308"
   integrity sha1-bYCcnNDPe7iVLYD8hPoT1H3bEwg=
 
+dayjs@^1.9.3:
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.9.3.tgz#b7f94b22ad2a136a4ca02a01ab68ae893fe1a268"
+  integrity sha512-V+1SyIvkS+HmNbN1G7A9+ERbFTV9KTXu6Oor98v2xHmzzpp52OIJhQuJSTywWuBY5pyAEmlwbCi1Me87n/SLOw==
+
 debug@2.6.9, debug@^2.2.0:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"

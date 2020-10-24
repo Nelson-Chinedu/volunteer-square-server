@@ -1,5 +1,6 @@
 import { ForbiddenError, UserInputError } from 'apollo-server';
 import winstonEnvLogger from 'winston-env-logger';
+import dayJs from 'dayjs';
 
 import { Account, Event } from '../../../../db';
 
@@ -17,6 +18,10 @@ const createEvent: ResolverType = async (
   }
 ) => {
   const { name, description, category, location, time, date } = args;
+
+  const formatDate = dayJs(date).format('MMM DD, YYYY');
+  const formatTime = dayJs(time).format('h:mm A');
+
   try {
     const account = await Account.findOne({
       where: {
@@ -38,8 +43,8 @@ const createEvent: ResolverType = async (
       description,
       category,
       location,
-      time,
-      date,
+      time: formatTime,
+      date: formatDate,
       profile: account.profile,
     });
     await newEvent.save();
