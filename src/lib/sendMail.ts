@@ -16,7 +16,7 @@ const sendMail = async (receiver: string, data: IMessage): Promise<void> => {
             `<p>${name}</p>
              <p>${body} </p>
              <a
-              href='http://localhost:3000/auth/${route}?${query}=${verificationLink}'>
+              href='${process.env.CLIENT_URL}/auth/${route}?${query}=${verificationLink}'>
                 ${verificationLink}
              </a>`:
              `<p>${name}</p>
