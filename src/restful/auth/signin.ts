@@ -33,21 +33,23 @@ const signin = async (req: Request, res: Response) => {
     }
 
     if (account && !account.verified) {
-      const verificationToken: string = createToken(
-        { id: account.id },
-        process.env.VERIFICATION_JWT_kEY as string,
-        '7d'
-      );
-      const { firstname, lastname } = account.profile;
+      if(process.env.NODE_ENV === 'production'){
+        const verificationToken: string = createToken(
+          { id: account.id },
+          process.env.VERIFICATION_JWT_kEY as string,
+          '7d'
+        );
+        const { firstname, lastname } = account.profile;
 
-      const mailMessage = {
-        name: `Dear ${firstname} ${lastname}`,
-        body: 'Please click the link below to verify your account',
-        route: 'verify-email',
-        query: 'token',
-        verificationLink: `${verificationToken}`,
-      };
-      await sendToEmail(email, mailMessage);
+        const mailMessage = {
+          name: `Dear ${firstname} ${lastname}`,
+          body: 'Please click the link below to verify your account',
+          route: 'verify-email',
+          query: 'token',
+          verificationLink: `${verificationToken}`,
+        };
+        await sendToEmail(email, mailMessage);
+      }
 
       return respondWithWarning(
         res,
