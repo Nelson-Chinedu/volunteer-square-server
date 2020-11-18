@@ -18,7 +18,7 @@ export const respondWithSuccess = (
 export const respondWithWarning = (
   res: Response,
   status: number,
-  message: string,
+  message: any,
   payload = {}
 ): Response => {
   return res
