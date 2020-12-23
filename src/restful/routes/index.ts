@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import passport from 'passport';
 
 import signupAuth from '../controllers/user/signup';
@@ -15,6 +15,7 @@ import signinAuth from '../auth/signin';
 import { createToken } from '../../lib/token';
 
 require('../auth/googleAuth');
+require('../auth/facebookAuth')
 
 export default (router: Router) => {
   router.post(
@@ -47,4 +48,15 @@ export default (router: Router) => {
       res.redirect(`${process.env.CLIENT_URL}/app/dashboard?token=${token}`);
     }
   );
+  router.get('/auth/facebook', passport.authenticate('facebook'));
+  router.get('/auth/facebook/callback',
+    passport.authenticate('facebook', { failureRedirect: '/login' }), (req: any, res: any) => {
+    const {id} = req.user.account;
+    const token = createToken(
+      { id },
+      process.env.JWT_KEY as string,
+      '7d'
+    );
+    res.redirect(`${process.env.CLIENT_URL}/app/dashboard?token=${token}`);
+  });
 };
