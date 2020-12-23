@@ -15,7 +15,7 @@ import signinAuth from '../auth/signin';
 import { createToken } from '../../lib/token';
 
 require('../auth/googleAuth');
-require('../auth/facebookAuth')
+require('../auth/facebookAuth');
 
 export default (router: Router) => {
   router.post(
