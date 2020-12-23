@@ -32,7 +32,7 @@ passport.use(
               id: account.profile.id
             }
           });
-          return done(null, {profile});
+          return done(null, {account, profile});
         }
         const password = generator.generate({
           length: 10,
@@ -59,7 +59,7 @@ passport.use(
           profile: newProfile
         });
         account.save();
-        return done(null, {account});
+        return done(null, {account, newProfile});
       } catch (error) {
         winstonEnvLogger.error({
           message: 'An error occured',
