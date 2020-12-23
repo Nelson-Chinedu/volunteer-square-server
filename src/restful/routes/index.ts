@@ -12,6 +12,7 @@ import signupValidation from '../validations/signupValidation';
 import signinValidation from '../validations/signinValidation';
 
 import signinAuth from '../auth/signin';
+import { createToken } from '../../lib/token';
 
 require('../auth/googleAuth');
 
@@ -36,8 +37,14 @@ export default (router: Router) => {
   );
   router.get(
     '/google/callback',
-    passport.authenticate('google', {session: false, failureRedirect: '/login'}), (_req:any, res: any) => {
-      res.redirect(`${process.env.CLIENT_URL}/app/dashboard`);
+    passport.authenticate('google', {session: false, failureRedirect: '/login'}), (req:any, res: any) => {
+      const {id} = req.user.account;
+      const token = createToken(
+        { id },
+        process.env.JWT_KEY as string,
+        '7d'
+      );
+      res.redirect(`${process.env.CLIENT_URL}/app/dashboard?token=${token}`);
     }
   );
 };
