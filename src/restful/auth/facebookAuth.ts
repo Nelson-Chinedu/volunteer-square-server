@@ -8,15 +8,15 @@ import sendToEmail from '../../lib/sendMail';
 import { Account, Profile } from '../../db';
 
 passport.use(new FacebookStrategy({
-  clientID: '720529528887168',
-  clientSecret: '984dea9af58519f9237f62546ad03220',
-  callbackURL: 'http://localhost:8000/auth/facebook/callback',
+  clientID: process.env.CLIENT_ID_FB as string,
+  clientSecret: process.env.CLIENT_SECRET_FB as string,
+  callbackURL: `${process.env.BASE_URL}/auth/facebook/callback` as string,
   profileFields: ['id', 'displayName', 'photos', 'email']
 },
 async (
   _accessToken: any,
   _refreshToken: any,
-  { _json: { name, email } }: any,
+  { _json: { email, name } }: any,
   done: any
 ) => {
   try {

@@ -48,7 +48,7 @@ export default (router: Router) => {
       res.redirect(`${process.env.CLIENT_URL}/app/dashboard?token=${token}`);
     }
   );
-  router.get('/auth/facebook', passport.authenticate('facebook'));
+  router.get('/auth/facebook', passport.authenticate('facebook', {scope: 'email'}));
   router.get('/auth/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/login' }), (req: any, res: any) => {
     const {id} = req.user.account;
