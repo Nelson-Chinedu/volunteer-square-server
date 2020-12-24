@@ -3,6 +3,7 @@ import passport from 'passport';
 
 import signupAuth from '../controllers/user/signup';
 import verifyEmail from '../controllers/email/verifyEmail';
+import forgotPassword from '../controllers/user/forgotPassword';
 
 import validationMiddleware from '../middleware/validationMiddleware';
 import checkEmailMiddleware from '../middleware/checkEmailMiddleware';
@@ -32,6 +33,7 @@ export default (router: Router) => {
     signinAuth
   );
   router.post('/api/v1/verify-email/', verifyEmailMiddleware, verifyEmail);
+  router.post('/api/v1/reset-password/', forgotPassword);
   router.get(
     '/google',
     passport.authenticate('google', { scope: ['profile', 'email'] })
