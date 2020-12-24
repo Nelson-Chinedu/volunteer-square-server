@@ -22,11 +22,11 @@ const forgotPassword = async (req: Request, res: Response) => {
         `We sent an email to ${email} with instructions to reset your password.`
       );
     }
-    if (process.env.NODE_ENV === 'production'){
+    // if (process.env.NODE_ENV === 'production'){
     const {id, profile: {firstname, lastname }} = account;
     const token = createToken(
       { id },
-      process.env.JWT_KEY as string,
+      process.env.VERIFICATION_JWT_kEY as string,
       '1h'
     );
     const mailMessage = {
@@ -39,7 +39,7 @@ const forgotPassword = async (req: Request, res: Response) => {
       verificationLink: `${token}`,
     };
     await sendMail(email, mailMessage);
-  }
+  // }
     return respondWithSuccess(
         res,
         200,
