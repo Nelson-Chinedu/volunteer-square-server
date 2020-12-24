@@ -26,7 +26,7 @@ const forgotPassword = async (req: Request, res: Response) => {
     const {id, profile: {firstname, lastname }} = account;
     const token = createToken(
       { id },
-      process.env.JWT_KEY as string,
+      process.env.VERIFICATION_JWT_kEY as string,
       '1h'
     );
     const mailMessage = {
