@@ -5,15 +5,18 @@ import signupAuth from '../controllers/user/signup';
 import verifyEmail from '../controllers/email/verifyEmail';
 import forgotPassword from '../controllers/user/forgotPassword';
 import resetPassword from '../controllers/user/resetPassword';
+import imageUpload from '../controllers/user/imageUpload';
 
 import validationMiddleware from '../middleware/validationMiddleware';
 import checkEmailMiddleware from '../middleware/checkEmailMiddleware';
 import verifyEmailMiddleware from '../middleware/verifyEmailMiddleware';
+import isAuthorized from '../middleware/isAuthorized';
 
 import signupValidation from '../validations/signupValidation';
 import signinValidation from '../validations/signinValidation';
 
 import signinAuth from '../auth/signin';
+
 import { createToken } from '../../lib/token';
 
 require('../auth/googleAuth');
@@ -36,6 +39,7 @@ export default (router: Router) => {
   router.post('/api/v1/verify-email/', verifyEmailMiddleware, verifyEmail);
   router.post('/api/v1/forgot-password', forgotPassword);
   router.post('/api/v1/reset-password', resetPassword);
+  router.post('/api/v1/upload-image', isAuthorized,  imageUpload);
   router.get(
     '/google',
     passport.authenticate('google', { scope: ['profile', 'email'] })
