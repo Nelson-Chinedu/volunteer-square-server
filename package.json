@@ -34,7 +34,7 @@
     "ipinfo": "^1.5.0",
     "jimp": "^0.14.0",
     "jsonwebtoken": "^8.5.1",
-    "moment": "^2.27.0",
+    "moment": "^2.29.4",
     "multer": "^1.4.2",
     "passport": "^0.4.1",
     "passport-facebook": "^3.0.0",
